@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab
+    restart: always
+    hostname: "gitlab.mshah.net"
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url "http://gitlab.mshah.net"
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+    volumes:
+      - gitlab_config:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+    networks:
+      - nginx-proxy
+      - gitlab_net
+    ports:
+      - "2222:22" # SSH only
+
+volumes:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:
+
+networks:
+  gitlab_net:
+  nginx-proxy:
+    external: true
